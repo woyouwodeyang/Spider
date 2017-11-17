@@ -1,0 +1,3 @@
+# Spider
+爬取一些简单网站的图片
+需要额外安装requests库和BeaufulSoup4库
