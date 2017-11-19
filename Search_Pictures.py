@@ -1,3 +1,6 @@
+#主要找到图片的网址，然后下载
+#coding = utf-8
+#可以添加日志
 import os
 import time
 import re
@@ -81,7 +84,7 @@ class Dir():
 					Dir.rootPath = os.getcwd()+'/'+Dir.rootPath
 				rootPath = Dir.rootPath+'/'+realTime+'/'
 				if not len(title) == 0:
-					rootPath = Dir.rootPath+'/'+realTime+'/'+str(title[0])+'/'
+					rootPath = Dir.rootPath+'/'+str(title[0])+'/'
 				os.makedirs(rootPath)				#默认在当前文件夹下创建)
 			else:
 				os.mmm()							#随便产生一个错误
@@ -149,7 +152,7 @@ failUrl = []						#统计爬取失败的url
 url = getUrl()						#调用getUrl函数,获取需要爬取的网站，返回列表类型
 size = len(url)						#取得网址的数量
 headers = Browse_Way()				#调用Browse_Way函数，设置浏览方式
-Dir.rootPath = input('请输入文件保存路径:')
+Dir.rootPath = input('请输入文件保存路径(默认不为空):')
 RetAllImageUrl.label = input('请输入标题所对应的标签(默认为空):')
 
 while number < size:				#爬取多个网页,外循环
@@ -177,25 +180,24 @@ while number < size:				#爬取多个网页,外循环
 				path = rootPath + imageUrl.split('/')[-1]		#创建路径
 				if  not os.path.exists(path):						#判断文件是否存在,路径不存在执行下面的语句
 					try:			#防止一些错误的网址导致程序的结束
+						p().printInfo('正在爬取第%d张图片,文件将保存到%s'%(j+1,path))
 						ri = requests.get(imageUrl)
 						with open(path,'wb') as f:				#写到path路径里面，以二进制方式写
-							p().printInfo('正在爬取第%d张图片,文件将保存到%s'%(j,path))
 							f.write(ri.content)						#with会自动关闭文件
 							j+=1
-							#p().printInfo('爬取第%d张图片,文件已保存到%s'%(j,path))
 					except:
 						p().printInfo('爬取'+str(imageUrl)+'失败')
 						failUrl.append(imageUrl)		#将错误的url加入到failUrl中
 						#pass
-					CP = (k+1)/len(AllIamgeUrl)*100
-					TP = (number+1)/len(url)*100
-					if CP > 100:
-						CP = CP%100
-					p().printInfo('当前网页爬取进度为:'+str(CP)+'%,'+'总的网页爬取进度为:'+str(TP)+'%.')
-					k += 1
+				CP = (k+1)/len(AllIamgeUrl)*100
+				TP = (number+1)/len(url)*100
+				if CP > 100:
+					CP = CP%100
+				p().printInfo('当前网页爬取进度为:'+str(CP)+'%,'+'总的网页爬取进度为:'+str(TP)+'%.')
+				k += 1
 			#time.sleep(random.randint(1,5))	#随机1到5秒访问一次，防止网站封ip '''
 			Dir().deleteFiles(rootPath)
-			time.sleep(random.randint(1,10)/10)
+			time.sleep(random.randint(1,5)/10)
 			number += 1
 		else:
 			number += 1						#避免一直在错误网址循环
